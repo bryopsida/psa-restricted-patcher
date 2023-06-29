@@ -58,7 +58,7 @@ spec:
   {{- else }}
   issuerRef:
     name: {{ required "certmanager.issuerName is required when not using self signed issuer" $.Values.certmanager.issuerName }}
-    kind: {{ default "" $.Values.certmanager.}}
+    kind: {{ default "" $.Values.certmanager.issuerType }}
     group: cert-manager.io
   {{- end }}
 {{- end }}
