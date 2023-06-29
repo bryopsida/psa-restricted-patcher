@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "k8s-mutating-webhook.name" -}}
+{{- define "psa-restricted-patcher.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "k8s-mutating-webhook.fullname" -}}
+{{- define "psa-restricted-patcher.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "k8s-mutating-webhook.chart" -}}
+{{- define "psa-restricted-patcher.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "k8s-mutating-webhook.labels" -}}
-helm.sh/chart: {{ include "k8s-mutating-webhook.chart" . }}
-{{ include "k8s-mutating-webhook.selectorLabels" . }}
+{{- define "psa-restricted-patcher.labels" -}}
+helm.sh/chart: {{ include "psa-restricted-patcher.chart" . }}
+{{ include "psa-restricted-patcher.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,17 +45,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "k8s-mutating-webhook.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "k8s-mutating-webhook.name" . }}
+{{- define "psa-restricted-patcher.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "psa-restricted-patcher.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "k8s-mutating-webhook.serviceAccountName" -}}
+{{- define "psa-restricted-patcher.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "k8s-mutating-webhook.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "psa-restricted-patcher.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}

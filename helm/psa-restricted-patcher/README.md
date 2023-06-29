@@ -1,4 +1,4 @@
-# k8s-mutating-webhook
+# psa-restricted-patcher
 
 ![Version: 0.3.0](https://img.shields.io/badge/Version-0.3.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
 
@@ -13,28 +13,35 @@ A starter template for a dynamic admission mutating webhook
 | autoscaling.maxReplicas | int | `10` |  |
 | autoscaling.minReplicas | int | `2` |  |
 | autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
-| certmanager.enabled | bool | `true` |  |
-| certmanager.useSelfSignedIssuer | bool | `true` |  |
+| certmanager.enabled | bool | `true` | enable using cert manager to issue a TLS certificate, if this is not enabled you must manage your own TLS secret |
+| certmanager.issuerName | string | `nil` | When not using useSelfSignedIssuer, specify the issuer name |
+| certmanager.issuerType | string | `"Issuer"` | When not using the self packaged/managed option from useSelfSignedIssuer, specify the IssuerType |
+| certmanager.useSelfSignedIssuer | bool | `true` | Use a self signed issuer managed by this helm release |
 | fullnameOverride | string | `""` |  |
 | image.pullPolicy | string | `"Always"` |  |
-| image.repository | string | `"ghcr.io/curium-rocks/k8s-mutating-webhook"` |  |
+| image.repository | string | `"ghcr.io/bryopsida/psa-restricted-patcher"` |  |
 | image.tag | string | `"main"` |  |
 | imagePullSecrets | list | `[]` |  |
 | logLevel | string | `"info"` |  |
 | nameOverride | string | `""` |  |
 | nodeSelector | object | `{}` |  |
 | podAnnotations | object | `{}` |  |
-| podSecurityContext | object | `{}` |  |
+| podSecurityContext.seccompProfile.type | string | `"RuntimeDefault"` |  |
 | replicaCount | int | `1` |  |
 | resources.limits.cpu | string | `"0.2"` |  |
 | resources.limits.memory | string | `"128Mi"` |  |
 | resources.requests.cpu | string | `"0.1"` |  |
 | resources.requests.memory | string | `"64Mi"` |  |
+| securityContext.allowPrivilegeEscalation | bool | `false` |  |
+| securityContext.capabilities.drop[0] | string | `"ALL"` |  |
+| securityContext.readOnlyRootFilesystem | bool | `true` |  |
+| securityContext.runAsGroup | int | `1000` |  |
+| securityContext.runAsNonRoot | bool | `true` |  |
 | securityContext.runAsUser | int | `1000` |  |
 | serviceAccount.annotations | object | `{}` |  |
 | serviceAccount.create | bool | `true` |  |
 | serviceAccount.name | string | `""` |  |
-| tlsSecretName | string | `"k8s-mutating-webhook"` |  |
+| tlsSecretName | string | `"psa-restricted-patcher"` |  |
 | tolerations | list | `[]` |  |
 
 ----------------------------------------------
