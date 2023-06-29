@@ -140,6 +140,8 @@ spec:
         runAsUser: 2000
         runAsGroup: 2000
         fsGroup: 2000
+        seccompProfile:
+          type: RuntimeDefault
       serviceAccountName: {{ .Release.Name }}-post-install-job-sa
       restartPolicy: Never
       {{- with .Values.imagePullSecrets }}
@@ -161,6 +163,13 @@ spec:
         name: post-install-job
         image: "ghcr.io/curium-rocks/docker-kubectl:main"
         imagePullPolicy: Always
+        securityContext:
+          runAsNonRoot: true
+          allowPrivilegeEscaltion: false
+          readOnlyRootFilesystem: true  
+          capabilities:
+            drop:
+              - ALL
         env:
           - name: SECRET_NAME
             value: "{{ .Values.tlsSecretName }}"
