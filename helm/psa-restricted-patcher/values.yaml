@@ -1,11 +1,11 @@
 replicaCount: 1
 
 image:
-  repository: ghcr.io/curium-rocks/k8s-mutating-webhook
+  repository: ghcr.io/bryopsida/psa-restricted-patcher
   pullPolicy: Always
   tag: main
 
-tlsSecretName: "k8s-mutating-webhook"
+tlsSecretName: "psa-restricted-patcher"
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
@@ -16,9 +16,20 @@ serviceAccount:
   name: ""
 
 podAnnotations: {}
-podSecurityContext: {}
+
+podSecurityContext:
+  seccompProfile:
+    type: RuntimeDefault
+
 securityContext:
   runAsUser: 1000
+  runAsGroup: 1000
+  runAsNonRoot: true
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true  
+  capabilities:
+    drop:
+      - ALL
 
 logLevel: "info"
 
@@ -42,6 +53,13 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
 certmanager:
+  # -- enable using cert manager to issue a TLS certificate, if this is not enabled you must manage your own TLS secret
   enabled: true
+  # -- Use a self signed issuer managed by this helm release
   useSelfSignedIssuer: true
+  # -- When not using the self packaged/managed option from useSelfSignedIssuer, specify the IssuerType
+  issuerType: Issuer
+  # -- When not using useSelfSignedIssuer, specify the issuer name
+  issuerName: ~
