@@ -10,9 +10,9 @@ webhooks:
   failurePolicy: Ignore
   rules:
   - operations: ["CREATE"]
-    apiGroups: ["*"]
-    apiVersions: ["*"]
-    resources: ["*"]
+    apiGroups: [""]
+    apiVersions: ["v1"]
+    resources: ["pod"]
     scope: "*"
   clientConfig:
     {{- /* if this is an upgrade and cm is enabled, and it's a self signed issuer, enforce hookCaBundle being set */}}
