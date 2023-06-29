@@ -1,24 +1,9 @@
-# k8s-mutating-webhook
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=curium-rocks_k8s-mutating-webhook&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=curium-rocks_k8s-mutating-webhook) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=curium-rocks_k8s-mutating-webhook&metric=coverage)](https://sonarcloud.io/summary/new_code?id=curium-rocks_k8s-mutating-webhook) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=curium-rocks_k8s-mutating-webhook&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=curium-rocks_k8s-mutating-webhook) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=curium-rocks_k8s-mutating-webhook&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=curium-rocks_k8s-mutating-webhook) [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=curium-rocks_k8s-mutating-webhook&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=curium-rocks_k8s-mutating-webhook) [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=curium-rocks_k8s-mutating-webhook&metric=bugs)](https://sonarcloud.io/summary/new_code?id=curium-rocks_k8s-mutating-webhook)
-
-This template provides a kick start to making a kubernetes admission controller using TypeScript and Node.JS, uses a Mutating Webhook.
-- [Kubernetes-client/client-node](https://github.com/kubernetes-client/javascript)
-- [Jest](https://github.com/facebook/jest)
-- [Github Action CI](.github/workflows/ci.yaml)
-- [Renovate](https://github.com/renovatebot/renovate)
-- [Eslint (with standard config)](https://github.com/standard/eslint-config-standard)
-- [Typescript](https://github.com/Microsoft/TypeScript)
-- [Config](https://github.com/node-config/node-config)
-- [Pino](https://github.com/pinojs/pino)
-- [Fastify](https://github.com/fastify/fastify)
-- [Fast Json Patch](https://github.com/Starcounter-Jack/JSON-Patch)
-- [InversifyJS](https://github.com/inversify/InversifyJS)
-- [Sonar Project File](./sonar-project.properties)
-- [Dockerfile](./Dockerfile)
+# psa-restricted-patcher
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=bryopsida_psa-restricted-patcher&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=bryopsida_psa-restricted-patcher) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=bryopsida_psa-restricted-patcher&metric=coverage)](https://sonarcloud.io/summary/new_code?id=bryopsida_psa-restricted-patcher) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=bryopsida_psa-restricted-patcher&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=bryopsida_psa-restricted-patcher) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=bryopsida_psa-restricted-patcher&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=bryopsida_psa-restricted-patcher) [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=bryopsida_psa-restricted-patcher&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=bryopsida_psa-restricted-patcher) [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=bryopsida_psa-restricted-patcher&metric=bugs)](https://sonarcloud.io/summary/new_code?id=bryopsida_psa-restricted-patcher)
 
 
 ## NPM Scripts
-The following scripts are included in the NPM project configuration
+The following scripts are available
 - `lint` lints the source code using eslint
 - `lint:fix` automatically fixes any lint errors that can be fixed automatically
 - `test` uses jest to run test suites
@@ -44,16 +29,16 @@ helm repo add jetstack https://charts.jetstack.io && helm repo update && \
   cert-manager jetstack/cert-manager --set installCRDs=true --debug --wait
 ```
 
-Add the helm repos `helm repo add k8s https://curium-rocks.github.io/k8s-mutating-webhook` fetch updates `helm repo update`. 
+Add the helm repos `helm repo add psa https://bryopsida.github.io/psa-restricted-patcher` fetch updates `helm repo update`. 
 
-Verify it worked `helm search repo k8s` and you should see something like.
+Verify it worked `helm search repo psa` and you should see something like.
 
 ```
 NAME                                                    CHART VERSION   APP VERSION     DESCRIPTION                                       
-k8s/k8s-mutating-webhook...      0.1.0           0.1.0           A starter template for a dynamic admission mut...
+psa/psa-restricted-patcher...      0.1.0           0.1.0          ...
 ```
 
-Deploy the app `helm upgrade --install starter k8s/k8s-mutating-webhook`
+Deploy the app `helm upgrade --install starter psa/psa-restricted-patcher`
 
 Verify it worked `kubectl run testpod --image=busybox`, this will be changed, fetch it's yaml `kubectl get testpod -o yaml` you will see its `securityContext`'s have been enhanced.
 
@@ -74,11 +59,3 @@ This defines symbols for each type that will be configured in the IoC container,
 
 ### [inversify.config.ts](./src/inversify.config.ts)
 This file maps the types defined in `./src/types.ts` to interface types. For more information refer to [inversify](https://github.com/inversify/InversifyJS).
-
-## After Using as Template Todo List
-1) [ ] Update Sonar Project Properties For [Sonar Cloud](https://sonarcloud.io)
-2) [ ] Add SONARQUBE_KEY secret to your repo or org if not already present
-3) [ ] Point badges in README.md to correct location for you repo
-3) [ ] Update [renovate.json](./renovate.json) to meet desired behavior for your needs, docs can be found [here](https://docs.renovatebot.com).
-4) [ ] Update this readme to reflect your project name and info
-5) [ ] Rename all `k8s-mutating-webhook` references to match your project name
