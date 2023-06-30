@@ -12,7 +12,7 @@
     "helm:addRepos": "helm repo add jetstack https://charts.jetstack.io && helm repo update",
     "helm:deployCertManager": "helm upgrade --install --namespace cert-manager --create-namespace cert-manager jetstack/cert-manager --set installCRDs=true --debug --wait",
     "helm:template": "helm template psa-restricted-patcher ./helm/psa-restricted-patcher/",
-    "helm:deploy": "helm upgrade --install psa-restricted-patcher ./helm/psa-restricted-patcher/ --debug --wait",
+    "helm:deploy": "helm upgrade --install psa-restricted-patcher ./helm/psa-restricted-patcher/ --debug --wait --set image.tag=local --set image.pullPolicy=IfNotPresent",
     "helm:uninstall": "helm del psa-restricted-patcher",
     "helm:uninstallCertManager": "helm del --namespace cert-manager cert-manager",
     "build": "node_modules/typescript/bin/tsc --project ./ && mkdir -p dist/config && cp src/config/*.json dist/config/",
@@ -58,7 +58,7 @@
   },
   "dependencies": {
     "@fastify/under-pressure": "^8.1.0",
-    "@kubernetes/client-node": "^0.18.0",
+    "@kubernetes/client-node": "^1.0.0-rc2",
     "config": "^3.3.8",
     "fast-json-patch": "^3.1.1",
     "fastify": "^4.10.2",

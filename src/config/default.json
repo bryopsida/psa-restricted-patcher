@@ -6,5 +6,12 @@
   },
   "log": {
     "level": "info"
-  }
+  },
+  "addSeccompProfile": true,
+  "seccompProfile": "RuntimeDefault",
+  "namespaces": [],
+  "defaultGid": 1001,
+  "defaultUid": 1001,
+  "defaultFsGroup": 1001,
+  "passthrough": ["^test.*$"]
 }

@@ -6,34 +6,43 @@ import { TYPES } from '../types'
 export function AdmissionController (instance: FastifyInstance, opts: FastifyPluginOptions, done: Function) {
   instance.log.info('Registering AdmissionController')
   const admissionService = instance.inversifyContainer.get<IAdmission>(TYPES.Services.Admission)
+  const namespaces = instance.inversifyContainer.get<Array<string>>(TYPES.Config.Namespaces)
+  const passThroughPatterns = instance.inversifyContainer.get<Array<RegExp>>(TYPES.Config.PassthroughPatterns)
   const processStats : Record<string, unknown> = {}
   processStats.requestsServed = 0
 
   instance.post('/', async (req, reply) => {
     const body: any = req.body
+    const allowResponse = {
+      apiVersion: 'admission.k8s.io/v1',
+      kind: 'AdmissionReview',
+      response: {
+        uid: body.request.uid,
+        allowed: true
+      }
+    }
     if (body.kind === 'AdmissionReview' && body.request.operation === 'CREATE' && body.request.kind.kind === 'Pod') {
       const newPod: V1Pod = body.request.object
-      const patch = await admissionService.admit(newPod)
-      instance.log.info('Generated patch = %s', patch)
-      reply.send({
-        apiVersion: 'admission.k8s.io/v1',
-        kind: 'AdmissionReview',
-        response: {
-          uid: body.request.uid,
-          allowed: true,
-          patch: Buffer.from(patch).toString('base64'),
-          patchType: 'JSONPatch'
-        }
-      })
+      if (namespaces.length !== 0 && !namespaces.some((n) => n.toLowerCase() === newPod.metadata?.namespace?.toLowerCase())) {
+        reply.send(allowResponse)
+      } else if (passThroughPatterns.some((p) => p.test(newPod.metadata?.name as string))) {
+        reply.send(allowResponse)
+      } else {
+        const patch = await admissionService.admit(newPod)
+        instance.log.info('Generated patch = %s', patch)
+        reply.send({
+          apiVersion: 'admission.k8s.io/v1',
+          kind: 'AdmissionReview',
+          response: {
+            uid: body.request.uid,
+            allowed: true,
+            patch: Buffer.from(patch).toString('base64'),
+            patchType: 'JSONPatch'
+          }
+        })
+      }
     } else {
-      reply.send({
-        apiVersion: 'admission.k8s.io/v1',
-        kind: 'AdmissionReview',
-        response: {
-          uid: body.request.uid,
-          allowed: true
-        }
-      })
+      reply.send(allowResponse)
     }
     processStats.requestsServed = (processStats.requestsServed as number) + 1
   })
