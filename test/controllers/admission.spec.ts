@@ -25,6 +25,8 @@ describe('controllers/admission', () => {
     container = new Container()
     mockAdmissionService = jest.mocked<IAdmission>(new Admission(pino({ level: 'error' }), 1001, 1001, 1001, false, 'RuntimeDefault'))
     container.bind<IAdmission>(TYPES.Services.Admission).toConstantValue(mockAdmissionService)
+    container.bind<Array<string>>(TYPES.Config.Namespaces).toConstantValue([])
+    container.bind<Array<string>>(TYPES.Config.PassthroughPatterns).toConstantValue([])
     fastify.register(fastifyInversifyPlugin, {
       container
     })
