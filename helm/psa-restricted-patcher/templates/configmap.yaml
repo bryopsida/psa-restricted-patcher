@@ -12,5 +12,12 @@ data:
       },
       "tls": {
         "enabled": true
-      }
+      },
+      "addSeccompProfile": {{ .Values.addSeccompProfile }},
+      "seccompProfile": "{{ .Values.seccompProfile  }}",
+      "namespaces": {{ .Values.namespaces | toJson }},
+      "defaultGid": {{ .Values.defaultGid }},
+      "defaultUid": {{ .Values.defaultUid }},
+      "defaultFsGroup": {{ .Values.defaultFsGroup }},
+      "passthrough": {{ .Values.passthroughPatterns | toJson }}
     }
