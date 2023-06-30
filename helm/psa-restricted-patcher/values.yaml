@@ -32,7 +32,20 @@ securityContext:
       - ALL
 
 logLevel: "info"
-
+# -- Toggle adding seccompProfile into the pod.securityContext
+addSeccompProfile: true
+# -- The seccompProfile to set for type
+seccompProfile: RuntimeDefault
+# -- The namespaces to automatically patch, if empty it will patch all namespaces
+namespaces: []
+# -- The default UID
+defaultUid: 1001
+# -- The default Groupd ID
+defaultGid: 1001
+# -- the default FS Groupd ID
+defaultFsGroup: 1001
+# -- A list of regex patterns, that if matched, the pod passes through untouched 
+passthroughPatterns: []
 resources:
   requests:
     memory: "64Mi"

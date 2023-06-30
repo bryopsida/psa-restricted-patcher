@@ -8,6 +8,7 @@ A starter template for a dynamic admission mutating webhook
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| addSeccompProfile | bool | `true` | Toggle adding seccompProfile into the pod.securityContext |
 | affinity | object | `{}` |  |
 | autoscaling.enabled | bool | `true` |  |
 | autoscaling.maxReplicas | int | `10` |  |
@@ -17,6 +18,9 @@ A starter template for a dynamic admission mutating webhook
 | certmanager.issuerName | string | `nil` | When not using useSelfSignedIssuer, specify the issuer name |
 | certmanager.issuerType | string | `"Issuer"` | When not using the self packaged/managed option from useSelfSignedIssuer, specify the IssuerType |
 | certmanager.useSelfSignedIssuer | bool | `true` | Use a self signed issuer managed by this helm release |
+| defaultFsGroup | int | `1001` | the default FS Groupd ID |
+| defaultGid | int | `1001` | The default Groupd ID |
+| defaultUid | int | `1001` | The default UID |
 | fullnameOverride | string | `""` |  |
 | image.pullPolicy | string | `"Always"` |  |
 | image.repository | string | `"ghcr.io/bryopsida/psa-restricted-patcher"` |  |
@@ -24,7 +28,9 @@ A starter template for a dynamic admission mutating webhook
 | imagePullSecrets | list | `[]` |  |
 | logLevel | string | `"info"` |  |
 | nameOverride | string | `""` |  |
+| namespaces | list | `[]` | The namespaces to automatically patch, if empty it will patch all namespaces |
 | nodeSelector | object | `{}` |  |
+| passthroughPatterns | list | `[]` | A list of regex patterns, that if matched, the pod passes through untouched  |
 | podAnnotations | object | `{}` |  |
 | podSecurityContext.seccompProfile.type | string | `"RuntimeDefault"` |  |
 | replicaCount | int | `1` |  |
@@ -32,6 +38,7 @@ A starter template for a dynamic admission mutating webhook
 | resources.limits.memory | string | `"128Mi"` |  |
 | resources.requests.cpu | string | `"0.1"` |  |
 | resources.requests.memory | string | `"64Mi"` |  |
+| seccompProfile | string | `"RuntimeDefault"` | The seccompProfile to set for type |
 | securityContext.allowPrivilegeEscalation | bool | `false` |  |
 | securityContext.capabilities.drop[0] | string | `"ALL"` |  |
 | securityContext.readOnlyRootFilesystem | bool | `true` |  |
