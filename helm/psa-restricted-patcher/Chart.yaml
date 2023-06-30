@@ -1,6 +1,8 @@
 apiVersion: v2
 name: psa-restricted-patcher
-description: A starter template for a dynamic admission mutating webhook
+description: Automatically patches pods on creation to conform to the pod security restricted profile
 type: application
 version: 0.3.0
 appVersion: "0.1.0"
+maintainers:
+  - name: bryopsida
