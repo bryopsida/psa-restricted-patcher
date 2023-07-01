@@ -1,7 +1,8 @@
-import { AdmissionregistrationV1Api, CoreV1Api, PatchUtils } from '@kubernetes/client-node'
+import { AdmissionregistrationV1Api, CoreV1Api, PatchUtils, V1MutatingWebhook, V1MutatingWebhookConfiguration } from '@kubernetes/client-node'
 import { inject, injectable } from 'inversify'
 import { TYPES } from '../types'
 import { Logger } from 'pino'
+import * as jsonpatch from 'fast-json-patch'
 
 export interface IKubernetes {
     /**
@@ -29,6 +30,13 @@ export class Kubernetes implements IKubernetes {
     this.admissionKubeClient = admissionApi
   }
 
+  private generateCaPatch (hook: V1MutatingWebhookConfiguration, newCa: string): any {
+    const observer = jsonpatch.observe<V1MutatingWebhookConfiguration>(hook)
+    const config = hook.webhooks?.at(0) as V1MutatingWebhook
+    config.clientConfig.caBundle = newCa
+    return jsonpatch.generate(observer).filter((patch) => patch.path === '/webhooks/0/clientConfig/caBundle')
+  }
+
   /** @inheritdoc */
   async syncCaBundle (): Promise<boolean> {
     // on any failure resolve failse
@@ -37,7 +45,7 @@ export class Kubernetes implements IKubernetes {
       const secret = await this.kubeClient.readNamespacedSecret(this.tlsSecretName, this.namespaceName)
       if (secret.body.data == null) throw new Error('Secret data property is null, cannot sync ca.crt')
       if (secret.body.data[Kubernetes.CA_CRT] == null) throw new Error('ca.crt is not present on secret, cannot sync')
-      const caCrt = Buffer.from(secret.body.data[Kubernetes.CA_CRT] as string, 'base64').toString('utf-8')
+      const caCrt = secret.body.data[Kubernetes.CA_CRT] as string
       // fetch the mutating webhook
       const webhook = await this.admissionKubeClient.readMutatingWebhookConfiguration(this.hookName)
       // we have one hook and one ruleset
@@ -46,11 +54,11 @@ export class Kubernetes implements IKubernetes {
       if (caCrt !== caBundle) {
         // the bundles have diverged we need to update
         this.log.warn('Updating webhook configurations clientConfig.caBundle to match ca.crt in tlsSecret')
-        this.log.info('TLS Secret ca.crt value = %s', caCrt)
-        this.log.info('clientConfig.caBundle value = %s', caBundle)
-        webhook.body.webhooks[0].clientConfig.caBundle = caCrt
-        const options = { headers: { 'Content-type': PatchUtils.PATCH_FORMAT_APPLY_YAML } }
-        await this.admissionKubeClient.patchMutatingWebhookConfiguration(this.hookName, webhook.body, undefined, undefined, 'psa-restricted-patcher', undefined, false, options)
+        this.log.debug('TLS Secret ca.crt value = %s', caCrt)
+        this.log.debug('clientConfig.caBundle value = %s', caBundle)
+        const options = { headers: { 'Content-type': PatchUtils.PATCH_FORMAT_JSON_PATCH } }
+        const patch = this.generateCaPatch(webhook.body, caCrt)
+        await this.admissionKubeClient.patchMutatingWebhookConfiguration(this.hookName, patch, undefined, undefined, undefined, undefined, undefined, options)
       }
       return Promise.resolve(true)
     } catch (err) {

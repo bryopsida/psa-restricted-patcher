@@ -38,7 +38,8 @@ export class Server {
       retryAfter: 50,
       exposeStatusRoute: true,
       healthCheck: async () => {
-        return await this.k8s.syncCaBundle()
+        const result = await this.k8s.syncCaBundle()
+        return result
       },
       healthCheckInterval: 15000
     })
