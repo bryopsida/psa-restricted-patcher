@@ -13,7 +13,11 @@ webhooks:
     apiGroups: [""]
     apiVersions: ["v1"]
     resources: ["pods"]
+    {{- if .Values.namespaceScoped }}
+    scope: "Namespaced"
+    {{- else }}
     scope: "*"
+    {{- end }}
   clientConfig:
     {{- /* if this is an upgrade and cm is enabled, and it's a self signed issuer, enforce hookCaBundle being set */}}
     {{- if and .Release.IsUpgrade .Values.certmanager.enabled .Values.certmanager.useSelfSignedIssuer }}
