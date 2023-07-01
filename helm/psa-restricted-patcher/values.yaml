@@ -28,7 +28,12 @@ namespaceScoped: false
 podSecurityContext:
   seccompProfile:
     type: RuntimeDefault
-
+# -- amount of time to allot for the hook to respond, if failurePolicy is set to ignore the request will go through without modifying the resource
+timeoutSeconds: 1
+# -- Control the fail open or closed behavior, default is ignore to avoid breaking a cluster, this hook is intended to automatically patch to conform to the restricted security policy, the security policy is the actual gate
+failurePolicy: Ignore
+# -- ReinvocationPolicy can be Never or IfNeeded, this hook operates in a idempotent manner so IfNeeded is the default.
+reinvocationPolicy: IfNeeded
 securityContext:
   runAsUser: 1000
   runAsGroup: 1000
