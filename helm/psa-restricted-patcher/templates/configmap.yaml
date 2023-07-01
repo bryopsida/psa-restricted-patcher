@@ -19,5 +19,7 @@ data:
       "defaultGid": {{ .Values.defaultGid }},
       "defaultUid": {{ .Values.defaultUid }},
       "defaultFsGroup": {{ .Values.defaultFsGroup }},
-      "passthrough": {{ .Values.passthroughPatterns | toJson }}
+      "passthrough": {{ .Values.passthroughPatterns | toJson }},
+      "ignoredAnnotations": {{ .Values.ignoredAnnotations | toJson }},
+      "targettedAnnotations": {{ .Values.targettedAnnotations | toJson }}
     }

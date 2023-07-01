@@ -41,21 +41,3 @@ psa/psa-restricted-patcher...      0.1.0           0.1.0          ...
 Deploy the app `helm upgrade --install starter psa/psa-restricted-patcher`
 
 Verify it worked `kubectl run testpod --image=busybox`, this will be changed, fetch it's yaml `kubectl get testpod -o yaml` you will see its `securityContext`'s have been enhanced.
-
-
-## Structure
-### [Services](./src/services/)
-This is meant to include service abstractions, ideally each service should provide an interface/contract 
-exposing the functionality that other things in the application need.
-### [Entities](./src/entities/)
-Currently this is setup to house factories or other items to provide instances of third party things/modules that will be bound by the InversifyJS IoC container so they can be injected into other things with `@inject()`
-
-### [Models](./src/models/)
-This houses interfaces/models with little to no logic, the intent is these items can be passed/returned from the abstractions in services and avoid tight coupling to third party types.
-
-### [types.ts](./src/types.ts)
-This defines symbols for each type that will be configured in the IoC container, these are used to identify the type when using `@inject(TYPES.Services.Kubernetes)` for example. For more information refer to [inversify](https://github.com/inversify/InversifyJS).
-
-
-### [inversify.config.ts](./src/inversify.config.ts)
-This file maps the types defined in `./src/types.ts` to interface types. For more information refer to [inversify](https://github.com/inversify/InversifyJS).
