@@ -1,4 +1,4 @@
-import { AdmissionregistrationV1Api, CoreV1Api } from '@kubernetes/client-node'
+import { AdmissionregistrationV1Api, CoreV1Api, PatchUtils } from '@kubernetes/client-node'
 import { inject, injectable } from 'inversify'
 import { TYPES } from '../types'
 import { Logger } from 'pino'
@@ -46,8 +46,11 @@ export class Kubernetes implements IKubernetes {
       if (caCrt !== caBundle) {
         // the bundles have diverged we need to update
         this.log.warn('Updating webhook configurations clientConfig.caBundle to match ca.crt in tlsSecret')
+        this.log.info('TLS Secret ca.crt value = %s', caCrt)
+        this.log.info('clientConfig.caBundle value = %s', caBundle)
         webhook.body.webhooks[0].clientConfig.caBundle = caCrt
-        await this.admissionKubeClient.patchMutatingWebhookConfiguration(this.hookName, webhook.body)
+        const options = { headers: { 'Content-type': PatchUtils.PATCH_FORMAT_APPLY_YAML } }
+        await this.admissionKubeClient.patchMutatingWebhookConfiguration(this.hookName, webhook.body, undefined, undefined, 'psa-restricted-patcher', undefined, false, options)
       }
       return Promise.resolve(true)
     } catch (err) {
