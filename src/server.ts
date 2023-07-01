@@ -40,7 +40,7 @@ export class Server {
       healthCheck: async () => {
         return await this.k8s.syncCaBundle()
       },
-      healthCheckInterval: 5000
+      healthCheckInterval: 15000
     })
     this.fastify.log.info('Finished registering plugins')
   }
