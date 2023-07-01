@@ -3,6 +3,19 @@ entries:
   psa-restricted-patcher:
   - apiVersion: v2
     appVersion: 0.1.0
+    created: "2023-07-01T14:04:02.334319491Z"
+    description: Automatically patches pods on creation to conform to the pod security
+      restricted profile
+    digest: d2c21a10b8142186811a38175bc0f602549f991bcd5850cb67c9b49d9c549b99
+    maintainers:
+    - name: bryopsida
+    name: psa-restricted-patcher
+    type: application
+    urls:
+    - https://github.com/bryopsida/psa-restricted-patcher/releases/download/psa-restricted-patcher-0.4.0/psa-restricted-patcher-0.4.0.tgz
+    version: 0.4.0
+  - apiVersion: v2
+    appVersion: 0.1.0
     created: "2023-07-01T02:40:46.731071642Z"
     description: Automatically patches pods on creation to conform to the pod security
       restricted profile
@@ -14,4 +27,4 @@ entries:
     urls:
     - https://github.com/bryopsida/psa-restricted-patcher/releases/download/psa-restricted-patcher-0.3.0/psa-restricted-patcher-0.3.0.tgz
     version: 0.3.0
-generated: "2023-07-01T02:40:46.731077742Z"
+generated: "2023-07-01T14:04:02.334325991Z"
