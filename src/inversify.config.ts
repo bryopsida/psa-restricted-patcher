@@ -6,11 +6,13 @@ import { CoreV1Api, KubeConfig } from '@kubernetes/client-node'
 import { Admission, IAdmission } from './services/admission'
 import config from 'config'
 import pino, { Logger } from 'pino'
+import { Filter, IAnnotationMap, IFilter } from './services/filter'
 
 const appContainer = new Container()
 
 appContainer.bind<IKubernetes>(TYPES.Services.Kubernetes).to(Kubernetes)
 appContainer.bind<IAdmission>(TYPES.Services.Admission).to(Admission)
+appContainer.bind<IFilter>(TYPES.Services.Filter).to(Filter)
 
 appContainer.bind<KubeConfig>(TYPES.K8S.Config).toDynamicValue((context: interfaces.Context) => {
   const config = new KubeConfig()
@@ -31,6 +33,8 @@ appContainer.bind<number>(TYPES.Config.DefaultUid).toConstantValue(config.get<nu
 appContainer.bind<string>(TYPES.Config.SeccompProfile).toConstantValue(config.get<string>('seccompProfile'))
 appContainer.bind<boolean>(TYPES.Config.AddSeccompProfile).toConstantValue(config.get<boolean>('addSeccompProfile'))
 appContainer.bind<Array<RegExp>>(TYPES.Config.PassthroughPatterns).toConstantValue(config.get<Array<RegExp>>('passthrough').map((s) => new RegExp(s)))
+appContainer.bind<Array<IAnnotationMap>>(TYPES.Config.IgnoredSet).toConstantValue(config.get<Array<IAnnotationMap>>('ignoredAnnotations'))
+appContainer.bind<Array<IAnnotationMap>>(TYPES.Config.TargettedSet).toConstantValue(config.get<Array<IAnnotationMap>>('targettedAnnotations'))
 
 // create pino parent logger for services to use
 appContainer.bind<Logger>(TYPES.Services.Logging).toConstantValue(pino({

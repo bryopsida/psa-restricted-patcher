@@ -1,7 +1,7 @@
 {
   "name": "psa-restricted-patcher",
-  "version": "0.1.0",
-  "description": "A starter template for creating TypeScript, Node.JS apps that interface with kubernetes",
+  "version": "0.2.0",
+  "description": "Automatically patches pods on creation to comply with the restricted pod security admission policy",
   "main": "dist/app.js",
   "scripts": {
     "start": "node dist/app.js",

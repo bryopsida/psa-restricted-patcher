@@ -1,6 +1,6 @@
 # psa-restricted-patcher
 
-![Version: 0.4.0](https://img.shields.io/badge/Version-0.4.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
+![Version: 0.5.0](https://img.shields.io/badge/Version-0.5.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.2.0](https://img.shields.io/badge/AppVersion-0.2.0-informational?style=flat-square)
 
 Automatically patches pods on creation to conform to the pod security restricted profile
 
@@ -28,6 +28,7 @@ Automatically patches pods on creation to conform to the pod security restricted
 | defaultGid | int | `1001` | The default Groupd ID |
 | defaultUid | int | `1001` | The default UID |
 | fullnameOverride | string | `""` |  |
+| ignoredAnnotations | list | `[]` | provide an array of maps of annotations that when present on a pod, patcher will ignore mutating pod, if empty it will not ignore any pods |
 | image.pullPolicy | string | `"Always"` |  |
 | image.repository | string | `"ghcr.io/bryopsida/psa-restricted-patcher"` |  |
 | image.tag | string | `"main"` |  |
@@ -55,6 +56,7 @@ Automatically patches pods on creation to conform to the pod security restricted
 | serviceAccount.annotations | object | `{}` |  |
 | serviceAccount.create | bool | `true` |  |
 | serviceAccount.name | string | `""` |  |
+| targettedAnnotations | list | `[]` | provide an array of maps of annotations that when present on a pod, patcher will mutate pod, if empty it will mutate all pods |
 | tlsSecretName | string | `"psa-restricted-patcher"` |  |
 | tolerations | list | `[]` |  |
 

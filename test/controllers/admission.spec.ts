@@ -9,6 +9,7 @@ import { TYPES } from '../../src/types'
 import pino from 'pino'
 import { V1Pod } from '@kubernetes/client-node'
 import * as jsonpatch from 'fast-json-patch'
+import { Filter, IFilter } from '../../src/services/filter'
 
 function buildCreatePodRequest (imageName: string) : any {
   const baseReq = require('../requests/createPod.json')
@@ -23,7 +24,9 @@ describe('controllers/admission', () => {
   beforeEach(() => {
     fastify = Fastify()
     container = new Container()
-    mockAdmissionService = jest.mocked<IAdmission>(new Admission(pino({ level: 'error' }), 1001, 1001, 1001, false, 'RuntimeDefault'))
+    const logger = pino({ level: 'error' })
+    mockAdmissionService = jest.mocked<IAdmission>(new Admission(logger, 1001, 1001, 1001, false, 'RuntimeDefault'))
+    container.bind<IFilter>(TYPES.Services.Filter).toConstantValue(new Filter(logger, [], []))
     container.bind<IAdmission>(TYPES.Services.Admission).toConstantValue(mockAdmissionService)
     container.bind<Array<string>>(TYPES.Config.Namespaces).toConstantValue([])
     container.bind<Array<string>>(TYPES.Config.PassthroughPatterns).toConstantValue([])

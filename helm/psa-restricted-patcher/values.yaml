@@ -14,7 +14,14 @@ serviceAccount:
   create: true
   annotations: {}
   name: ""
-
+# -- provide an array of maps of annotations that when present on a pod, patcher will ignore mutating pod, if empty it will not ignore any pods
+ignoredAnnotations: []
+  # - KEY_1: KEY_1_VALUE
+  #   KEY_2: KEY_2_VALUE
+  # - KEY_1: DIFF_VALUE
+  #   KEY_2: DIFF_VALUE
+# -- provide an array of maps of annotations that when present on a pod, patcher will mutate pod, if empty it will mutate all pods
+targettedAnnotations: []
 podAnnotations: {}
 # -- If true, scopes the webhook to the namespace the webhook is deployed.
 namespaceScoped: false
