@@ -6,8 +6,9 @@ webhooks:
 - name:  {{ include "psa-restricted-patcher.fullname" . }}.{{ .Release.Namespace }}.svc
   admissionReviewVersions: ["v1"]
   sideEffects: None
-  timeoutSeconds: 1
-  failurePolicy: Ignore
+  timeoutSeconds: {{ .Values.timeSeconds | int }}
+  failurePolicy: {{ .Values.failurePolicy | quote }}
+  reinvocationPolicy: {{ .Values.reinvocationPolicy | quote }}
   rules:
   - operations: ["CREATE"]
     apiGroups: [""]

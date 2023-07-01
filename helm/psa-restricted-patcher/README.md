@@ -1,6 +1,6 @@
 # psa-restricted-patcher
 
-![Version: 0.5.0](https://img.shields.io/badge/Version-0.5.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.2.0](https://img.shields.io/badge/AppVersion-0.2.0-informational?style=flat-square)
+![Version: 0.6.0](https://img.shields.io/badge/Version-0.6.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.2.0](https://img.shields.io/badge/AppVersion-0.2.0-informational?style=flat-square)
 
 Automatically patches pods on creation to conform to the pod security restricted profile
 
@@ -27,6 +27,7 @@ Automatically patches pods on creation to conform to the pod security restricted
 | defaultFsGroup | int | `1001` | the default FS Groupd ID |
 | defaultGid | int | `1001` | The default Groupd ID |
 | defaultUid | int | `1001` | The default UID |
+| failurePolicy | string | `"Ignore"` | Control the fail open or closed behavior, default is ignore to avoid breaking a cluster, this hook is intended to automatically patch to conform to the restricted security policy, the security policy is the actual gate |
 | fullnameOverride | string | `""` |  |
 | ignoredAnnotations | list | `[]` | provide an array of maps of annotations that when present on a pod, patcher will ignore mutating pod, if empty it will not ignore any pods |
 | image.pullPolicy | string | `"Always"` |  |
@@ -41,6 +42,7 @@ Automatically patches pods on creation to conform to the pod security restricted
 | passthroughPatterns | list | `[]` | A list of regex patterns, that if matched, the pod passes through untouched  |
 | podAnnotations | object | `{}` |  |
 | podSecurityContext.seccompProfile.type | string | `"RuntimeDefault"` |  |
+| reinvocationPolicy | string | `"IfNeeded"` | ReinvocationPolicy can be Never or IfNeeded, this hook operates in a idempotent manner so IfNeeded is the default. |
 | replicaCount | int | `1` |  |
 | resources.limits.cpu | string | `"0.2"` |  |
 | resources.limits.memory | string | `"128Mi"` |  |
@@ -57,6 +59,7 @@ Automatically patches pods on creation to conform to the pod security restricted
 | serviceAccount.create | bool | `true` |  |
 | serviceAccount.name | string | `""` |  |
 | targettedAnnotations | list | `[]` | provide an array of maps of annotations that when present on a pod, patcher will mutate pod, if empty it will mutate all pods |
+| timeoutSeconds | int | `1` | amount of time to allot for the hook to respond, if failurePolicy is set to ignore the request will go through without modifying the resource |
 | tlsSecretName | string | `"psa-restricted-patcher"` |  |
 | tolerations | list | `[]` |  |
 
