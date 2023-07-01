@@ -24,10 +24,8 @@ webhooks:
     scope: "*"
     {{- end }}
   clientConfig:
-    {{- /* if this is an upgrade and cm is enabled, and it's a self signed issuer, enforce hookCaBundle being set */}}
-    {{- if and .Release.IsUpgrade .Values.certmanager.enabled .Values.certmanager.useSelfSignedIssuer }}
-    caBundle: {{ required "When upgrading after using a self signed issuer with certmanager you must provide the ca.crt as hookCaBundle on upgrades, otherwise api trust will break!" .Values.hookCaBundle}}
-    {{- else if .Values.hookCaBundle }}
+    {{- /* Allow setting this but, have periodic check tied to health checks in hook that can update this it's rotated */}}
+    {{- if .Values.hookCaBundle }}
     caBundle: {{ .Values.hookCaBundle }}
     {{- end }}
     service:

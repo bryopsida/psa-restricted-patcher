@@ -63,6 +63,9 @@ passthroughPatterns: []
 namespaceSelector: {}
 # -- Optional object selector: https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-objectselector
 objectSelector: {}
+
+# -- Create the RBAC rules and bindings to allow the webhook to update the caBundle value, this is needed to handle rotations, if disabled you can provide your own bindings
+rbacCreate: true
 resources:
   requests:
     memory: "64Mi"

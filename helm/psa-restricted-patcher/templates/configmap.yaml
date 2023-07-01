@@ -11,8 +11,11 @@ data:
         "level": "{{ .Values.logLevel }}"
       },
       "tls": {
-        "enabled": true
+        "enabled": true,
+        "secretName": {{ .Values.tlsSecretName | quote }}
       },
+      "hookName": "{{ include "psa-restricted-patcher.fullname" . }}-hooks",
+      "hookNamespace": {{ .Release.Namespace | quote }},
       "addSeccompProfile": {{ .Values.addSeccompProfile }},
       "seccompProfile": "{{ .Values.seccompProfile  }}",
       "namespaces": {{ .Values.namespaces | toJson }},

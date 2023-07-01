@@ -3,14 +3,18 @@ import { Container } from 'inversify'
 import { AdmissionController } from './controllers/admission'
 import fastifyInversifyPlugin from './inversify.fastify.plugin'
 import fastifyUnderPressurePlugin from '@fastify/under-pressure'
+import { IKubernetes } from './services/kubernetes'
+import { TYPES } from './types'
 export class Server {
   private readonly container: Container
   private readonly fastify: FastifyInstance
+  private readonly k8s: IKubernetes
   private readonly host: string
   private readonly port: number
 
   constructor (container: Container, options: FastifyServerOptions, host: string, port: number) {
     this.container = container
+    this.k8s = container.get<IKubernetes>(TYPES.Services.Kubernetes)
     this.host = host
     this.port = port
     this.fastify = Fastify(options)
@@ -32,7 +36,11 @@ export class Server {
       maxEventLoopUtilization: 0.98,
       message: 'Unavailable',
       retryAfter: 50,
-      exposeStatusRoute: true
+      exposeStatusRoute: true,
+      healthCheck: async () => {
+        return await this.k8s.syncCaBundle()
+      },
+      healthCheckInterval: 5000
     })
     this.fastify.log.info('Finished registering plugins')
   }
