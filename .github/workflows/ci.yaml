@@ -161,7 +161,7 @@ jobs:
           mkdir -p /tmp/failure-logs
           minikube logs > /tmp/failure-logs/minikube.log
           kubectl logs deployments/psa-restricted-patcher --prefix=true --ignore-errors=true --timestamps --pod-running-timeout=60s > /tmp/failure-logs/psa-restricted-patcher.deployment.log
-          kubectl describe deployment kpsa-restricted-patcher > /tmp/failure-logs/psa-restricted-patcher.deployment.describe
+          kubectl describe deployment psa-restricted-patcher > /tmp/failure-logs/psa-restricted-patcher.deployment.describe
           kubectl get deployment psa-restricted-patcher -o yaml > /tmp/failure-logs/psa-restricted-patcher.deployment.yaml
           kubectl describe configmap psa-restricted-patcher > /tmp/failure-logs/psa-restricted-patcher.configmap.describe
       - name: Upload Logs On Failure
