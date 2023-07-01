@@ -59,6 +59,10 @@ defaultGid: 1001
 defaultFsGroup: 1001
 # -- A list of regex patterns, that if matched, the pod passes through untouched 
 passthroughPatterns: []
+# -- Optional namespace selector: https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-namespaceselector
+namespaceSelector: {}
+# -- Optional object selector: https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-objectselector
+objectSelector: {}
 resources:
   requests:
     memory: "64Mi"
