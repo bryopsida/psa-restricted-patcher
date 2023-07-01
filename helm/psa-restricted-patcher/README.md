@@ -1,6 +1,6 @@
 # psa-restricted-patcher
 
-![Version: 0.3.0](https://img.shields.io/badge/Version-0.3.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
+![Version: 0.4.0](https://img.shields.io/badge/Version-0.4.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
 
 Automatically patches pods on creation to conform to the pod security restricted profile
 
@@ -34,6 +34,7 @@ Automatically patches pods on creation to conform to the pod security restricted
 | imagePullSecrets | list | `[]` |  |
 | logLevel | string | `"info"` |  |
 | nameOverride | string | `""` |  |
+| namespaceScoped | bool | `false` | If true, scopes the webhook to the namespace the webhook is deployed. |
 | namespaces | list | `[]` | The namespaces to automatically patch, if empty it will patch all namespaces |
 | nodeSelector | object | `{}` |  |
 | passthroughPatterns | list | `[]` | A list of regex patterns, that if matched, the pod passes through untouched  |
