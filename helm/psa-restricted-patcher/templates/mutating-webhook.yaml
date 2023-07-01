@@ -9,6 +9,10 @@ webhooks:
   timeoutSeconds: {{ .Values.timeoutSeconds | int }}
   failurePolicy: {{ .Values.failurePolicy | quote }}
   reinvocationPolicy: {{ .Values.reinvocationPolicy | quote }}
+  namespaceSelector:
+    {{- toYaml .Values.namespaceSelector | nindent 4 }}
+  objectSelector:
+    {{- toYaml .Values.objectSelector | nindent 4 }}
   rules:
   - operations: ["CREATE"]
     apiGroups: [""]

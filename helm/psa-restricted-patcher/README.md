@@ -1,6 +1,6 @@
 # psa-restricted-patcher
 
-![Version: 0.6.0](https://img.shields.io/badge/Version-0.6.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.2.0](https://img.shields.io/badge/AppVersion-0.2.0-informational?style=flat-square)
+![Version: 0.7.0](https://img.shields.io/badge/Version-0.7.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.2.0](https://img.shields.io/badge/AppVersion-0.2.0-informational?style=flat-square)
 
 Automatically patches pods on creation to conform to the pod security restricted profile
 
@@ -37,8 +37,10 @@ Automatically patches pods on creation to conform to the pod security restricted
 | logLevel | string | `"info"` |  |
 | nameOverride | string | `""` |  |
 | namespaceScoped | bool | `false` | If true, scopes the webhook to the namespace the webhook is deployed. |
+| namespaceSelector | object | `{}` | Optional namespace selector: https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-namespaceselector |
 | namespaces | list | `[]` | The namespaces to automatically patch, if empty it will patch all namespaces |
 | nodeSelector | object | `{}` |  |
+| objectSelector | object | `{}` | Optional object selector: https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-objectselector |
 | passthroughPatterns | list | `[]` | A list of regex patterns, that if matched, the pod passes through untouched  |
 | podAnnotations | object | `{}` |  |
 | podSecurityContext.seccompProfile.type | string | `"RuntimeDefault"` |  |
