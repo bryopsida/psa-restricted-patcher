@@ -16,7 +16,8 @@ serviceAccount:
   name: ""
 
 podAnnotations: {}
-
+# -- If true, scopes the webhook to the namespace the webhook is deployed.
+namespaceScoped: false
 podSecurityContext:
   seccompProfile:
     type: RuntimeDefault
