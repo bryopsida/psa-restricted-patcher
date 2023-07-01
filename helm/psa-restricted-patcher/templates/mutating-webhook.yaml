@@ -6,7 +6,7 @@ webhooks:
 - name:  {{ include "psa-restricted-patcher.fullname" . }}.{{ .Release.Namespace }}.svc
   admissionReviewVersions: ["v1"]
   sideEffects: None
-  timeoutSeconds: {{ .Values.timeSeconds | int }}
+  timeoutSeconds: {{ .Values.timeoutSeconds | int }}
   failurePolicy: {{ .Values.failurePolicy | quote }}
   reinvocationPolicy: {{ .Values.reinvocationPolicy | quote }}
   rules:
