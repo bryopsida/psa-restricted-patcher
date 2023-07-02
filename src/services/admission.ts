@@ -1,8 +1,8 @@
-import { inject, injectable } from "inversify"
-import { TYPES } from "../types"
-import { Logger } from "pino"
-import { V1Pod, V1PodSpec } from "@kubernetes/client-node"
-import * as jsonpatch from "fast-json-patch"
+import { inject, injectable } from 'inversify'
+import { TYPES } from '../types'
+import { Logger } from 'pino'
+import { V1Capabilities, V1Pod, V1PodSpec } from '@kubernetes/client-node'
+import * as jsonpatch from 'fast-json-patch'
 
 export interface IAdmission {
   /**
@@ -30,7 +30,7 @@ export class Admission implements IAdmission {
     @inject(TYPES.Config.AddSeccompProfile) addSeccompProfile: boolean,
     @inject(TYPES.Config.SeccompProfile) seccompProfile: string
   ) {
-    this.logger = parentLogger.child({ module: "services/Admission" })
+    this.logger = parentLogger.child({ module: 'services/Admission' })
     this.defaultFsGroup = defaultFsGroup
     this.defaultGid = defaultGid
     this.defaultUid = defaultUid
@@ -67,6 +67,10 @@ export class Admission implements IAdmission {
         c.securityContext.runAsGroup = this.defaultGid ?? 1001
       if (!c.securityContext.runAsUser)
         c.securityContext.runAsUser = this.defaultUid ?? 1001
+      if (!c.securityContext.capabilities)
+        c.securityContext.capabilities = new V1Capabilities()
+      if (!c.securityContext.capabilities.drop)
+        c.securityContext.capabilities.drop = ['ALL']
       return c
     })
     return Promise.resolve(JSON.stringify(jsonpatch.generate(observer)))

@@ -3,11 +3,11 @@ import {
   FastifyPluginOptions,
   FastifyReply,
   FastifyRequest
-} from "fastify"
-import fastifyPlugin from "fastify-plugin"
-import { Container } from "inversify"
+} from 'fastify'
+import fastifyPlugin from 'fastify-plugin'
+import { Container } from 'inversify'
 
-declare module "fastify" {
+declare module 'fastify' {
   // eslint-disable-next-line no-unused-vars
   interface FastifyInstance {
     inversifyContainer: Container
@@ -24,17 +24,17 @@ export function InversifyFastifyPlugin(
   done: Function
 ) {
   if (!options.container)
-    done(new Error("options.container must be provided to the plugin"))
+    done(new Error('options.container must be provided to the plugin'))
   if (!(options.container instanceof Container))
     done(
-      new Error("options.container must be an instance of inversify.Container")
+      new Error('options.container must be an instance of inversify.Container')
     )
-  fastify.log.info("Registering InversifyFastifyPlugin")
-  fastify.decorate("inversifyContainer", options.container)
-  fastify.decorateRequest("inversifyScope", null)
+  fastify.log.info('Registering InversifyFastifyPlugin')
+  fastify.decorate('inversifyContainer', options.container)
+  fastify.decorateRequest('inversifyScope', null)
 
   fastify.addHook(
-    "onRequest",
+    'onRequest',
     (req: FastifyRequest, reply: FastifyReply, done: Function) => {
       req.inversifyScope = fastify.inversifyContainer.createChild(
         options.requestScopeOptions
@@ -44,7 +44,7 @@ export function InversifyFastifyPlugin(
   )
   if (options.disposeOnResponse) {
     fastify.addHook(
-      "onResponse",
+      'onResponse',
       (req: FastifyRequest, reply: FastifyReply, done: Function) => {
         req.inversifyScope.unbindAll()
         done()
@@ -52,16 +52,16 @@ export function InversifyFastifyPlugin(
     )
   }
   if (options.disposeOnClose) {
-    fastify.addHook("onClose", (fastify: FastifyInstance, done: Function) => {
+    fastify.addHook('onClose', (fastify: FastifyInstance, done: Function) => {
       fastify.inversifyContainer.unbindAll()
       done()
     })
   }
   done()
-  fastify.log.info("Finished Registering InversifyFastifyPlugin")
+  fastify.log.info('Finished Registering InversifyFastifyPlugin')
 }
 
 export default fastifyPlugin(InversifyFastifyPlugin, {
-  fastify: "4.x",
-  name: "@curium-rocks/fastify-inversify-plugin"
+  fastify: '4.x',
+  name: '@curium-rocks/fastify-inversify-plugin'
 })

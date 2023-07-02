@@ -1,7 +1,7 @@
-import { V1Pod } from "@kubernetes/client-node"
-import { inject, injectable } from "inversify"
-import { Logger } from "pino"
-import { TYPES } from "../types"
+import { V1Pod } from '@kubernetes/client-node'
+import { inject, injectable } from 'inversify'
+import { Logger } from 'pino'
+import { TYPES } from '../types'
 
 export type IAnnotationMap = Record<string, string>
 export interface IFilter {
@@ -48,7 +48,7 @@ export class Filter implements IFilter {
     @inject(TYPES.Config.IgnoredSet) ignoredSet: Array<IAnnotationMap>,
     @inject(TYPES.Config.TargettedSet) targettedSet: Array<IAnnotationMap>
   ) {
-    this.logger = parentLogger.child({ module: "services/Filter" })
+    this.logger = parentLogger.child({ module: 'services/Filter' })
     this.ignoredSet = ignoredSet
     this.targettedSet = targettedSet
   }
