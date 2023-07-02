@@ -4,7 +4,8 @@ module.exports = {
     es2022: true
   },
   extends: [
-    'standard'
+    'standard',
+    'prettier'
   ],
   ignorePatterns: [],
   parser: '@typescript-eslint/parser',
