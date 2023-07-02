@@ -68,11 +68,11 @@ objectSelector: {}
 rbacCreate: true
 resources:
   requests:
-    memory: "64Mi"
-    cpu: "0.1"
-  limits:
     memory: "128Mi"
-    cpu: "0.2"
+    cpu: "0.25"
+  limits:
+    memory: "256Mi"
+    cpu: "0.5"
 
 
 autoscaling:
