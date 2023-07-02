@@ -1,2 +1,4 @@
 helm
 node_modules
+coverage
+dist

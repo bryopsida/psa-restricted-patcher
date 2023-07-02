@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 jobs:
   build:
     timeout-minutes: 10
@@ -15,47 +15,47 @@ jobs:
         node-version: [16.x, 18.x, 20.x]
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - run: npm ci
-    - run: npm run build --if-present
-    - run: npm run lint --if-present
-    - run: npm test
-    - uses: actions/upload-artifact@v3
-      if: ${{ matrix.node-version == '16.x' }}
-      with:
-        name: coverage
-        path: |
-          coverage
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+      - run: npm ci
+      - run: npm run build --if-present
+      - run: npm run lint --if-present
+      - run: npm test
+      - uses: actions/upload-artifact@v3
+        if: ${{ matrix.node-version == '16.x' }}
+        with:
+          name: coverage
+          path: |
+            coverage
   sonar:
     runs-on: ubuntu-latest
     needs:
-    - build
+      - build
     steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-    - uses: actions/download-artifact@v3
-      with:
-        name: coverage
-        path: coverage
-    - name: SonarCloud Scan
-      uses: SonarSource/sonarcloud-github-action@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-        SONAR_TOKEN: ${{ secrets.SONARQUBE_KEY }}
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/download-artifact@v3
+        with:
+          name: coverage
+          path: coverage
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONARQUBE_KEY }}
   build-image:
     timeout-minutes: 10
     runs-on: ubuntu-latest
     needs:
-     - build
+      - build
     env:
-      REGISTRY: 'ghcr.io'
-      IMAGE_NAME: 'bryopsida/psa-restricted-patcher'
+      REGISTRY: "ghcr.io"
+      IMAGE_NAME: "bryopsida/psa-restricted-patcher"
     permissions:
       contents: read
       packages: write
@@ -67,7 +67,7 @@ jobs:
       - name: Install cosign
         uses: sigstore/cosign-installer@6e04d228eb30da1757ee4e1dd75a0ec73a653e06
         with:
-          cosign-release: 'v1.13.1'
+          cosign-release: "v1.13.1"
       # for multi arch container builds
       - name: Set up QEMU
         uses: docker/setup-qemu-action@master
@@ -124,10 +124,10 @@ jobs:
       matrix:
         k8s-version: [1.22.13, 1.23.10, 1.24.4, 1.25.0, 1.26.0, 1.27.0]
     needs:
-     - build-image
+      - build-image
     env:
-      REGISTRY: 'ghcr.io'
-      IMAGE_NAME: 'bryopsida/psa-restricted-patcher'
+      REGISTRY: "ghcr.io"
+      IMAGE_NAME: "bryopsida/psa-restricted-patcher"
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -135,7 +135,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: 'npm'
+          cache: "npm"
       - name: Install Dependencies
         run: npm ci
       - name: Start Minikube
@@ -174,11 +174,11 @@ jobs:
   publish-chart:
     if: ${{ github.event_name != 'pull_request' }}
     needs:
-    - verify
+      - verify
     timeout-minutes: 5
     runs-on: ubuntu-latest
     permissions:
-      contents: write     
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v3
