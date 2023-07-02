@@ -1,6 +1,6 @@
 # psa-restricted-patcher
 
-![Version: 0.9.0](https://img.shields.io/badge/Version-0.9.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.4.0](https://img.shields.io/badge/AppVersion-0.4.0-informational?style=flat-square)
+![Version: 0.10.0](https://img.shields.io/badge/Version-0.10.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.4.0](https://img.shields.io/badge/AppVersion-0.4.0-informational?style=flat-square)
 
 Automatically patches pods on creation to conform to the pod security restricted profile
 
@@ -47,10 +47,10 @@ Automatically patches pods on creation to conform to the pod security restricted
 | rbacCreate | bool | `true` | Create the RBAC rules and bindings to allow the webhook to update the caBundle value, this is needed to handle rotations, if disabled you can provide your own bindings |
 | reinvocationPolicy | string | `"IfNeeded"` | ReinvocationPolicy can be Never or IfNeeded, this hook operates in a idempotent manner so IfNeeded is the default. |
 | replicaCount | int | `1` |  |
-| resources.limits.cpu | string | `"0.2"` |  |
-| resources.limits.memory | string | `"128Mi"` |  |
-| resources.requests.cpu | string | `"0.1"` |  |
-| resources.requests.memory | string | `"64Mi"` |  |
+| resources.limits.cpu | string | `"0.5"` |  |
+| resources.limits.memory | string | `"256Mi"` |  |
+| resources.requests.cpu | string | `"0.25"` |  |
+| resources.requests.memory | string | `"128Mi"` |  |
 | seccompProfile | string | `"RuntimeDefault"` | The seccompProfile to set for type |
 | securityContext.allowPrivilegeEscalation | bool | `false` |  |
 | securityContext.capabilities.drop[0] | string | `"ALL"` |  |
