@@ -1,9 +1,9 @@
-import path from "path"
-import { readFile } from "fs/promises"
-import { Container } from "inversify"
-import { Server } from "./server"
-import { FastifyServerOptions } from "fastify"
-import { TYPES } from "./types"
+import path from 'path'
+import { readFile } from 'fs/promises'
+import { Container } from 'inversify'
+import { Server } from './server'
+import { FastifyServerOptions } from 'fastify'
+import { TYPES } from './types'
 
 export default async function main(
   container: Container,
@@ -18,10 +18,10 @@ export default async function main(
       container.get<string>(TYPES.Config.TLSCertPath)
     )
     const key = await readFile(keyPath, {
-      encoding: "utf-8"
+      encoding: 'utf-8'
     })
     const cert = await readFile(certPath, {
-      encoding: "utf-8"
+      encoding: 'utf-8'
     })
     https = { key, cert }
   }
@@ -32,17 +32,17 @@ export default async function main(
         logger: true,
         https
       } as any),
-    host ?? "0.0.0.0",
+    host ?? '0.0.0.0',
     port ?? 3000
   )
 }
 
 if (require.main === module) {
-  const appContainer = require("./inversify.config").appContainer
+  const appContainer = require('./inversify.config').appContainer
   main(appContainer)
     .then((server) => {
       return server.open().then(() => {
-        process.on("SIGINT|SIGTERM", async () => {
+        process.on('SIGINT|SIGTERM', async () => {
           await server.close()
         })
       })

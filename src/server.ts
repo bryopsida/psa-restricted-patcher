@@ -1,10 +1,10 @@
-import Fastify, { FastifyInstance, FastifyServerOptions } from "fastify"
-import { Container } from "inversify"
-import { AdmissionController } from "./controllers/admission"
-import fastifyInversifyPlugin from "./inversify.fastify.plugin"
-import fastifyUnderPressurePlugin from "@fastify/under-pressure"
-import { IKubernetes } from "./services/kubernetes"
-import { TYPES } from "./types"
+import Fastify, { FastifyInstance, FastifyServerOptions } from 'fastify'
+import { Container } from 'inversify'
+import { AdmissionController } from './controllers/admission'
+import fastifyInversifyPlugin from './inversify.fastify.plugin'
+import fastifyUnderPressurePlugin from '@fastify/under-pressure'
+import { IKubernetes } from './services/kubernetes'
+import { TYPES } from './types'
 export class Server {
   private readonly container: Container
   private readonly fastify: FastifyInstance
@@ -28,7 +28,7 @@ export class Server {
   }
 
   private registerPlugins() {
-    this.fastify.log.info("Registering plugins")
+    this.fastify.log.info('Registering plugins')
     this.fastify.register(fastifyInversifyPlugin, {
       container: this.container,
       disposeOnClose: false,
@@ -39,7 +39,7 @@ export class Server {
       maxHeapUsedBytes: 100000000,
       maxRssBytes: 100000000,
       maxEventLoopUtilization: 0.98,
-      message: "Unavailable",
+      message: 'Unavailable',
       retryAfter: 50,
       exposeStatusRoute: true,
       healthCheck: async () => {
@@ -48,15 +48,15 @@ export class Server {
       },
       healthCheckInterval: 15000
     })
-    this.fastify.log.info("Finished registering plugins")
+    this.fastify.log.info('Finished registering plugins')
   }
 
   private registerControllers() {
-    this.fastify.log.info("Registering controllers")
+    this.fastify.log.info('Registering controllers')
     this.fastify.register(AdmissionController, {
-      prefix: "api/v1/admission"
+      prefix: 'api/v1/admission'
     })
-    this.fastify.log.info("Finished registering controllers")
+    this.fastify.log.info('Finished registering controllers')
   }
 
   public async open(): Promise<void> {

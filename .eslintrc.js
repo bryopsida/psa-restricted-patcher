@@ -3,13 +3,13 @@ module.exports = {
     browser: false,
     es2022: true
   },
-  extends: ["standard", "prettier"],
+  extends: ['standard', 'prettier'],
   ignorePatterns: [],
-  parser: "@typescript-eslint/parser",
+  parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 12,
-    sourceType: "module"
+    sourceType: 'module'
   },
-  plugins: ["@typescript-eslint"],
+  plugins: ['@typescript-eslint'],
   rules: {}
 }

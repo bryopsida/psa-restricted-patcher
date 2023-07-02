@@ -1,6 +1,6 @@
 {
   "name": "psa-restricted-patcher",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Automatically patches pods on creation to comply with the restricted pod security admission policy",
   "main": "dist/app.js",
   "scripts": {

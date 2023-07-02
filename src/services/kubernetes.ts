@@ -4,11 +4,11 @@ import {
   PatchUtils,
   V1MutatingWebhook,
   V1MutatingWebhookConfiguration
-} from "@kubernetes/client-node"
-import { inject, injectable } from "inversify"
-import { TYPES } from "../types"
-import { Logger } from "pino"
-import * as jsonpatch from "fast-json-patch"
+} from '@kubernetes/client-node'
+import { inject, injectable } from 'inversify'
+import { TYPES } from '../types'
+import { Logger } from 'pino'
+import * as jsonpatch from 'fast-json-patch'
 
 export interface IKubernetes {
   /**
@@ -19,7 +19,7 @@ export interface IKubernetes {
 
 @injectable()
 export class Kubernetes implements IKubernetes {
-  static readonly CA_CRT = "ca.crt"
+  static readonly CA_CRT = 'ca.crt'
   private readonly log: Logger
   private readonly hookName: string
   private readonly tlsSecretName: string
@@ -35,7 +35,7 @@ export class Kubernetes implements IKubernetes {
     @inject(TYPES.K8S.CoreApi) kubeClient: CoreV1Api,
     @inject(TYPES.K8S.AdmissionApi) admissionApi: AdmissionregistrationV1Api
   ) {
-    this.log = parentLogger.child({ module: "services/Kubernetes" })
+    this.log = parentLogger.child({ module: 'services/Kubernetes' })
     this.hookName = hookName
     this.tlsSecretName = secretName
     this.kubeClient = kubeClient
@@ -52,7 +52,7 @@ export class Kubernetes implements IKubernetes {
     config.clientConfig.caBundle = newCa
     return jsonpatch
       .generate(observer)
-      .filter((patch) => patch.path === "/webhooks/0/clientConfig/caBundle")
+      .filter((patch) => patch.path === '/webhooks/0/clientConfig/caBundle')
   }
 
   /** @inheritdoc */
@@ -65,9 +65,9 @@ export class Kubernetes implements IKubernetes {
         this.namespaceName
       )
       if (secret.body.data == null)
-        throw new Error("Secret data property is null, cannot sync ca.crt")
+        throw new Error('Secret data property is null, cannot sync ca.crt')
       if (secret.body.data[Kubernetes.CA_CRT] == null)
-        throw new Error("ca.crt is not present on secret, cannot sync")
+        throw new Error('ca.crt is not present on secret, cannot sync')
       const caCrt = secret.body.data[Kubernetes.CA_CRT] as string
       // fetch the mutating webhook
       const webhook =
@@ -76,17 +76,17 @@ export class Kubernetes implements IKubernetes {
         )
       // we have one hook and one ruleset
       if (webhook.body.webhooks == null || webhook.body.webhooks.length === 0)
-        throw new Error("Invalid hookName configuration provided, no webhooks")
+        throw new Error('Invalid hookName configuration provided, no webhooks')
       const caBundle = webhook.body.webhooks[0].clientConfig.caBundle
       if (caCrt !== caBundle) {
         // the bundles have diverged we need to update
         this.log.warn(
-          "Updating webhook configurations clientConfig.caBundle to match ca.crt in tlsSecret"
+          'Updating webhook configurations clientConfig.caBundle to match ca.crt in tlsSecret'
         )
-        this.log.debug("TLS Secret ca.crt value = %s", caCrt)
-        this.log.debug("clientConfig.caBundle value = %s", caBundle)
+        this.log.debug('TLS Secret ca.crt value = %s', caCrt)
+        this.log.debug('clientConfig.caBundle value = %s', caBundle)
         const options = {
-          headers: { "Content-type": PatchUtils.PATCH_FORMAT_JSON_PATCH }
+          headers: { 'Content-type': PatchUtils.PATCH_FORMAT_JSON_PATCH }
         }
         const patch = this.generateCaPatch(webhook.body, caCrt)
         await this.admissionKubeClient.patchMutatingWebhookConfiguration(
@@ -102,7 +102,7 @@ export class Kubernetes implements IKubernetes {
       }
       return Promise.resolve(true)
     } catch (err) {
-      this.log.error(err, "Error while checking ca bundle sync status")
+      this.log.error(err, 'Error while checking ca bundle sync status')
       return Promise.resolve(false)
     }
   }
