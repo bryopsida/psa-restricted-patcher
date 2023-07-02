@@ -7,7 +7,9 @@ import { CoreV1Api } from '@kubernetes/client-node'
 describe('inversify.config', () => {
   it('binds K8s Api', () => {
     expect(appContainer.isBound(TYPES.K8S.CoreApi)).toBeTruthy()
-    expect(appContainer.get<CoreV1Api>(TYPES.K8S.CoreApi)).toBeInstanceOf(CoreV1Api)
+    expect(appContainer.get<CoreV1Api>(TYPES.K8S.CoreApi)).toBeInstanceOf(
+      CoreV1Api
+    )
   })
   it('binds K8s Config', () => {
     expect(appContainer.isBound(TYPES.K8S.Config)).toBeTruthy()

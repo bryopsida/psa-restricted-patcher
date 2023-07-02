@@ -14,13 +14,26 @@ serviceAccount:
   create: true
   annotations: {}
   name: ""
-
+# -- provide an array of maps of annotations that when present on a pod, patcher will ignore mutating pod, if empty it will not ignore any pods
+ignoredAnnotations: []
+  # - KEY_1: KEY_1_VALUE
+  #   KEY_2: KEY_2_VALUE
+  # - KEY_1: DIFF_VALUE
+  #   KEY_2: DIFF_VALUE
+# -- provide an array of maps of annotations that when present on a pod, patcher will mutate pod, if empty it will mutate all pods
+targettedAnnotations: []
 podAnnotations: {}
-
+# -- If true, scopes the webhook to the namespace the webhook is deployed.
+namespaceScoped: false
 podSecurityContext:
   seccompProfile:
     type: RuntimeDefault
-
+# -- amount of time to allot for the hook to respond, if failurePolicy is set to ignore the request will go through without modifying the resource
+timeoutSeconds: 1
+# -- Control the fail open or closed behavior, default is ignore to avoid breaking a cluster, this hook is intended to automatically patch to conform to the restricted security policy, the security policy is the actual gate
+failurePolicy: Ignore
+# -- ReinvocationPolicy can be Never or IfNeeded, this hook operates in a idempotent manner so IfNeeded is the default.
+reinvocationPolicy: IfNeeded
 securityContext:
   runAsUser: 1000
   runAsGroup: 1000
@@ -46,13 +59,20 @@ defaultGid: 1001
 defaultFsGroup: 1001
 # -- A list of regex patterns, that if matched, the pod passes through untouched 
 passthroughPatterns: []
+# -- Optional namespace selector: https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-namespaceselector
+namespaceSelector: {}
+# -- Optional object selector: https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-objectselector
+objectSelector: {}
+
+# -- Create the RBAC rules and bindings to allow the webhook to update the caBundle value, this is needed to handle rotations, if disabled you can provide your own bindings
+rbacCreate: true
 resources:
   requests:
-    memory: "64Mi"
-    cpu: "0.1"
-  limits:
     memory: "128Mi"
-    cpu: "0.2"
+    cpu: "0.25"
+  limits:
+    memory: "256Mi"
+    cpu: "0.5"
 
 
 autoscaling:

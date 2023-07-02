@@ -59,11 +59,20 @@ spec:
               containerPort: 3000
               protocol: TCP
           livenessProbe:
-            tcpSocket:
+            httpGet:
+              path: /status
               port: https
+              scheme: HTTPS
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            failureThreshold: 3
           readinessProbe:
-            tcpSocket:
+            httpGet:
+              path: /status
               port: https
+              scheme: HTTPS
+            periodSeconds: 5
+            failureThreshold: 2
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

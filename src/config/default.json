@@ -2,7 +2,8 @@
   "tls": {
     "enabled": false,
     "keyPath": "/var/run/secrets/tls/tls.key",
-    "certPath": "/var/run/secrets/tls/tls.crt"
+    "certPath": "/var/run/secrets/tls/tls.crt",
+    "secretName": ""
   },
   "log": {
     "level": "info"
@@ -13,5 +14,9 @@
   "defaultGid": 1001,
   "defaultUid": 1001,
   "defaultFsGroup": 1001,
-  "passthrough": []
+  "passthrough": [],
+  "ignoredAnnotations": [],
+  "targettedAnnotations": [],
+  "hookName": "",
+  "hookNamespace": ""
 }

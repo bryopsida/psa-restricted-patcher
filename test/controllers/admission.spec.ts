@@ -9,8 +9,9 @@ import { TYPES } from '../../src/types'
 import pino from 'pino'
 import { V1Pod } from '@kubernetes/client-node'
 import * as jsonpatch from 'fast-json-patch'
+import { Filter, IFilter } from '../../src/services/filter'
 
-function buildCreatePodRequest (imageName: string) : any {
+function buildCreatePodRequest(imageName: string): any {
   const baseReq = require('../requests/createPod.json')
   baseReq.request.object.spec.containers[0].image = imageName
   return baseReq
@@ -23,10 +24,20 @@ describe('controllers/admission', () => {
   beforeEach(() => {
     fastify = Fastify()
     container = new Container()
-    mockAdmissionService = jest.mocked<IAdmission>(new Admission(pino({ level: 'error' }), 1001, 1001, 1001, false, 'RuntimeDefault'))
-    container.bind<IAdmission>(TYPES.Services.Admission).toConstantValue(mockAdmissionService)
+    const logger = pino({ level: 'error' })
+    mockAdmissionService = jest.mocked<IAdmission>(
+      new Admission(logger, 1001, 1001, 1001, false, 'RuntimeDefault')
+    )
+    container
+      .bind<IFilter>(TYPES.Services.Filter)
+      .toConstantValue(new Filter(logger, [], []))
+    container
+      .bind<IAdmission>(TYPES.Services.Admission)
+      .toConstantValue(mockAdmissionService)
     container.bind<Array<string>>(TYPES.Config.Namespaces).toConstantValue([])
-    container.bind<Array<string>>(TYPES.Config.PassthroughPatterns).toConstantValue([])
+    container
+      .bind<Array<string>>(TYPES.Config.PassthroughPatterns)
+      .toConstantValue([])
     fastify.register(fastifyInversifyPlugin, {
       container
     })
@@ -35,13 +46,15 @@ describe('controllers/admission', () => {
     })
   })
   it('Should patch pods when needed', async () => {
-    jest.spyOn(mockAdmissionService, 'admit').mockImplementation((pod: V1Pod) => {
-      const observer = jsonpatch.observe<V1Pod>(pod)
-      if (!pod.metadata) pod.metadata = {}
-      if (!pod.metadata.annotations) pod.metadata.annotations = {}
-      pod.metadata.annotations.test = 'test'
-      return Promise.resolve(JSON.stringify(jsonpatch.generate(observer)))
-    })
+    jest
+      .spyOn(mockAdmissionService, 'admit')
+      .mockImplementation((pod: V1Pod) => {
+        const observer = jsonpatch.observe<V1Pod>(pod)
+        if (!pod.metadata) pod.metadata = {}
+        if (!pod.metadata.annotations) pod.metadata.annotations = {}
+        pod.metadata.annotations.test = 'test'
+        return Promise.resolve(JSON.stringify(jsonpatch.generate(observer)))
+      })
     const payload = buildCreatePodRequest('busybox')
     const result = await fastify.inject({
       method: 'POST',
@@ -53,13 +66,17 @@ describe('controllers/admission', () => {
     expect(responseBody.response.uid).toEqual(payload.request.uid)
     expect(responseBody.response.allowed).toBeTruthy()
     const patch = Buffer.from(responseBody.response.patch, 'base64').toString()
-    expect(patch).toEqual('[{"op":"add","path":"/metadata/annotations","value":{"test":"test"}}]')
+    expect(patch).toEqual(
+      '[{"op":"add","path":"/metadata/annotations","value":{"test":"test"}}]'
+    )
   })
   it('Should only mutate pods when required', async () => {
-    jest.spyOn(mockAdmissionService, 'admit').mockImplementation((pod: V1Pod) => {
-      const observer = jsonpatch.observe<V1Pod>(pod)
-      return Promise.resolve(JSON.stringify(jsonpatch.generate(observer)))
-    })
+    jest
+      .spyOn(mockAdmissionService, 'admit')
+      .mockImplementation((pod: V1Pod) => {
+        const observer = jsonpatch.observe<V1Pod>(pod)
+        return Promise.resolve(JSON.stringify(jsonpatch.generate(observer)))
+      })
     const payload = buildCreatePodRequest('busybox')
     const result = await fastify.inject({
       method: 'POST',
@@ -70,7 +87,9 @@ describe('controllers/admission', () => {
     const responseBody = JSON.parse(result.body)
     expect(responseBody.response.uid).toEqual(payload.request.uid)
     expect(responseBody.response.allowed).toBeTruthy()
-    expect(responseBody.response.patch).toEqual(Buffer.from(JSON.stringify([])).toString('base64'))
+    expect(responseBody.response.patch).toEqual(
+      Buffer.from(JSON.stringify([])).toString('base64')
+    )
   })
   it('Should track requests served', async () => {
     jest.spyOn(mockAdmissionService, 'admit').mockImplementation((pod) => {

@@ -1,6 +1,6 @@
 # psa-restricted-patcher
 
-![Version: 0.3.0](https://img.shields.io/badge/Version-0.3.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
+![Version: 0.10.0](https://img.shields.io/badge/Version-0.10.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.4.0](https://img.shields.io/badge/AppVersion-0.4.0-informational?style=flat-square)
 
 Automatically patches pods on creation to conform to the pod security restricted profile
 
@@ -27,23 +27,30 @@ Automatically patches pods on creation to conform to the pod security restricted
 | defaultFsGroup | int | `1001` | the default FS Groupd ID |
 | defaultGid | int | `1001` | The default Groupd ID |
 | defaultUid | int | `1001` | The default UID |
+| failurePolicy | string | `"Ignore"` | Control the fail open or closed behavior, default is ignore to avoid breaking a cluster, this hook is intended to automatically patch to conform to the restricted security policy, the security policy is the actual gate |
 | fullnameOverride | string | `""` |  |
+| ignoredAnnotations | list | `[]` | provide an array of maps of annotations that when present on a pod, patcher will ignore mutating pod, if empty it will not ignore any pods |
 | image.pullPolicy | string | `"Always"` |  |
 | image.repository | string | `"ghcr.io/bryopsida/psa-restricted-patcher"` |  |
 | image.tag | string | `"main"` |  |
 | imagePullSecrets | list | `[]` |  |
 | logLevel | string | `"info"` |  |
 | nameOverride | string | `""` |  |
+| namespaceScoped | bool | `false` | If true, scopes the webhook to the namespace the webhook is deployed. |
+| namespaceSelector | object | `{}` | Optional namespace selector: https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-namespaceselector |
 | namespaces | list | `[]` | The namespaces to automatically patch, if empty it will patch all namespaces |
 | nodeSelector | object | `{}` |  |
+| objectSelector | object | `{}` | Optional object selector: https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-objectselector |
 | passthroughPatterns | list | `[]` | A list of regex patterns, that if matched, the pod passes through untouched  |
 | podAnnotations | object | `{}` |  |
 | podSecurityContext.seccompProfile.type | string | `"RuntimeDefault"` |  |
+| rbacCreate | bool | `true` | Create the RBAC rules and bindings to allow the webhook to update the caBundle value, this is needed to handle rotations, if disabled you can provide your own bindings |
+| reinvocationPolicy | string | `"IfNeeded"` | ReinvocationPolicy can be Never or IfNeeded, this hook operates in a idempotent manner so IfNeeded is the default. |
 | replicaCount | int | `1` |  |
-| resources.limits.cpu | string | `"0.2"` |  |
-| resources.limits.memory | string | `"128Mi"` |  |
-| resources.requests.cpu | string | `"0.1"` |  |
-| resources.requests.memory | string | `"64Mi"` |  |
+| resources.limits.cpu | string | `"0.5"` |  |
+| resources.limits.memory | string | `"256Mi"` |  |
+| resources.requests.cpu | string | `"0.25"` |  |
+| resources.requests.memory | string | `"128Mi"` |  |
 | seccompProfile | string | `"RuntimeDefault"` | The seccompProfile to set for type |
 | securityContext.allowPrivilegeEscalation | bool | `false` |  |
 | securityContext.capabilities.drop[0] | string | `"ALL"` |  |
@@ -54,6 +61,8 @@ Automatically patches pods on creation to conform to the pod security restricted
 | serviceAccount.annotations | object | `{}` |  |
 | serviceAccount.create | bool | `true` |  |
 | serviceAccount.name | string | `""` |  |
+| targettedAnnotations | list | `[]` | provide an array of maps of annotations that when present on a pod, patcher will mutate pod, if empty it will mutate all pods |
+| timeoutSeconds | int | `1` | amount of time to allot for the hook to respond, if failurePolicy is set to ignore the request will go through without modifying the resource |
 | tlsSecretName | string | `"psa-restricted-patcher"` |  |
 | tolerations | list | `[]` |  |
 

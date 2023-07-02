@@ -6,19 +6,26 @@ webhooks:
 - name:  {{ include "psa-restricted-patcher.fullname" . }}.{{ .Release.Namespace }}.svc
   admissionReviewVersions: ["v1"]
   sideEffects: None
-  timeoutSeconds: 1
-  failurePolicy: Ignore
+  timeoutSeconds: {{ .Values.timeoutSeconds | int }}
+  failurePolicy: {{ .Values.failurePolicy | quote }}
+  reinvocationPolicy: {{ .Values.reinvocationPolicy | quote }}
+  namespaceSelector:
+    {{- toYaml .Values.namespaceSelector | nindent 4 }}
+  objectSelector:
+    {{- toYaml .Values.objectSelector | nindent 4 }}
   rules:
   - operations: ["CREATE"]
     apiGroups: [""]
     apiVersions: ["v1"]
     resources: ["pods"]
+    {{- if .Values.namespaceScoped }}
+    scope: "Namespaced"
+    {{- else }}
     scope: "*"
+    {{- end }}
   clientConfig:
-    {{- /* if this is an upgrade and cm is enabled, and it's a self signed issuer, enforce hookCaBundle being set */}}
-    {{- if and .Release.IsUpgrade .Values.certmanager.enabled .Values.certmanager.useSelfSignedIssuer }}
-    caBundle: {{ required "When upgrading after using a self signed issuer with certmanager you must provide the ca.crt as hookCaBundle on upgrades, otherwise api trust will break!" .Values.hookCaBundle}}
-    {{- else if .Values.hookCaBundle }}
+    {{- /* Allow setting this but, have periodic check tied to health checks in hook that can update this it's rotated */}}
+    {{- if .Values.hookCaBundle }}
     caBundle: {{ .Values.hookCaBundle }}
     {{- end }}
     service:
