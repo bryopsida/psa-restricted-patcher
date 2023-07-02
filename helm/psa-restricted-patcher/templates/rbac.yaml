@@ -1,0 +1,59 @@
+{{- /* Create RBAC for the hook to update its mutatingwebhook configuration
+  Adds permission to read the referenced TLS secret for the hook which is already
+  mounted into the pod, and to read and patch its mutatingwebhookconfiguration to update its cabundle
+ */}}
+{{- if .Values.rbacCreate }}
+{{- /* Read the TLS secret for the hook */}}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: {{ .Release.Name }}-tls-reader
+rules:
+- apiGroups: [""]
+  resourceNames: ["{{ .Values.tlsSecretName }}"]
+  resources: ["secrets"]
+  verbs: ["get"]
+---
+{{- /* we need to be able to mutate the validating hook, this is a cluster level/global resource, we need a clusterrole for this*/}}
+{{- /* this role can read/write validating webhooks*/}}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ .Release.Name }}-ca-injector
+rules:
+- apiGroups: ["admissionregistration.k8s.io"]
+  resources: ["mutatingwebhookconfigurations"]
+  resourceNames: ["{{ include "psa-restricted-patcher.fullname" . }}-hooks"]
+  verbs: ["get", "update", "patch"]
+{{- /* bind sa to roles */}}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ .Release.Name }}-hook-read-secrets-binding
+  namespace: {{ .Release.Namespace }}
+subjects:
+- kind: ServiceAccount
+  name: {{ include "psa-restricted-patcher.serviceAccountName" . }}
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: Role 
+  name: {{ .Release.Name }}-tls-reader
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ .Release.Name }}-hook-read-secrets-binding
+subjects:
+- kind: ServiceAccount
+  name:  {{ include "psa-restricted-patcher.serviceAccountName" . }}
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: ClusterRole 
+  name: {{ .Release.Name }}-ca-injector
+  apiGroup: rbac.authorization.k8s.io
+{{- end }}

@@ -1,6 +1,6 @@
 # psa-restricted-patcher
 
-![Version: 0.7.0](https://img.shields.io/badge/Version-0.7.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.2.0](https://img.shields.io/badge/AppVersion-0.2.0-informational?style=flat-square)
+![Version: 0.8.0](https://img.shields.io/badge/Version-0.8.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.3.0](https://img.shields.io/badge/AppVersion-0.3.0-informational?style=flat-square)
 
 Automatically patches pods on creation to conform to the pod security restricted profile
 
@@ -44,6 +44,7 @@ Automatically patches pods on creation to conform to the pod security restricted
 | passthroughPatterns | list | `[]` | A list of regex patterns, that if matched, the pod passes through untouched  |
 | podAnnotations | object | `{}` |  |
 | podSecurityContext.seccompProfile.type | string | `"RuntimeDefault"` |  |
+| rbacCreate | bool | `true` | Create the RBAC rules and bindings to allow the webhook to update the caBundle value, this is needed to handle rotations, if disabled you can provide your own bindings |
 | reinvocationPolicy | string | `"IfNeeded"` | ReinvocationPolicy can be Never or IfNeeded, this hook operates in a idempotent manner so IfNeeded is the default. |
 | replicaCount | int | `1` |  |
 | resources.limits.cpu | string | `"0.2"` |  |
