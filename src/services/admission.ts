@@ -89,7 +89,7 @@ export class Admission implements IAdmission {
         type: this.seccompProfile
       }
     }
-    spec.containers = spec.containers.map(this.patchContainer)
+    spec.containers = spec.containers.map(this.patchContainer.bind(this))
     return Promise.resolve(JSON.stringify(jsonpatch.generate(observer)))
   }
 }
