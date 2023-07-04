@@ -1,7 +1,12 @@
 import { inject, injectable } from 'inversify'
 import { TYPES } from '../types'
 import { Logger } from 'pino'
-import { V1Capabilities, V1Pod, V1PodSpec } from '@kubernetes/client-node'
+import {
+  V1Capabilities,
+  V1Container,
+  V1Pod,
+  V1PodSpec
+} from '@kubernetes/client-node'
 import * as jsonpatch from 'fast-json-patch'
 
 export interface IAdmission {
@@ -38,6 +43,39 @@ export class Admission implements IAdmission {
     this.seccompProfile = seccompProfile
   }
 
+  /**
+   *
+   * @param {V1Container} c container object whose securityContext will be enhanced
+   * @returns {V1Container} enhanced container
+   */
+  private patchContainer(c: V1Container): V1Container {
+    if (!c.securityContext) c.securityContext = {}
+    if (
+      c.securityContext.allowPrivilegeEscalation == null ||
+      c.securityContext.allowPrivilegeEscalation
+    )
+      c.securityContext.allowPrivilegeEscalation = false
+    if (c.securityContext.privileged == null || c.securityContext.privileged)
+      c.securityContext.privileged = false
+    if (!c.securityContext.readOnlyRootFilesystem)
+      c.securityContext.readOnlyRootFilesystem = true
+    if (!c.securityContext.runAsNonRoot) c.securityContext.runAsNonRoot = true
+    if (!c.securityContext.runAsGroup)
+      c.securityContext.runAsGroup = this.defaultGid ?? 1001
+    if (!c.securityContext.runAsUser)
+      c.securityContext.runAsUser = this.defaultUid ?? 1001
+    if (!c.securityContext.capabilities)
+      c.securityContext.capabilities = new V1Capabilities()
+    if (!c.securityContext.capabilities.drop)
+      c.securityContext.capabilities.drop = ['ALL']
+    return c
+  }
+
+  /**
+   * Patch the pod level and container level securityContext's of a pod
+   * @param {V1Pod} pod
+   * @returns {string} JSON Patch string that will be returned to the API server
+   */
   async admit(pod: V1Pod): Promise<string> {
     const observer = jsonpatch.observe<V1Pod>(pod)
     const spec = pod.spec as V1PodSpec
@@ -51,28 +89,7 @@ export class Admission implements IAdmission {
         type: this.seccompProfile
       }
     }
-    spec.containers = spec.containers.map((c) => {
-      if (!c.securityContext) c.securityContext = {}
-      if (
-        c.securityContext.allowPrivilegeEscalation == null ||
-        c.securityContext.allowPrivilegeEscalation
-      )
-        c.securityContext.allowPrivilegeEscalation = false
-      if (c.securityContext.privileged == null || c.securityContext.privileged)
-        c.securityContext.privileged = false
-      if (!c.securityContext.readOnlyRootFilesystem)
-        c.securityContext.readOnlyRootFilesystem = true
-      if (!c.securityContext.runAsNonRoot) c.securityContext.runAsNonRoot = true
-      if (!c.securityContext.runAsGroup)
-        c.securityContext.runAsGroup = this.defaultGid ?? 1001
-      if (!c.securityContext.runAsUser)
-        c.securityContext.runAsUser = this.defaultUid ?? 1001
-      if (!c.securityContext.capabilities)
-        c.securityContext.capabilities = new V1Capabilities()
-      if (!c.securityContext.capabilities.drop)
-        c.securityContext.capabilities.drop = ['ALL']
-      return c
-    })
+    spec.containers = spec.containers.map(this.patchContainer)
     return Promise.resolve(JSON.stringify(jsonpatch.generate(observer)))
   }
 }
