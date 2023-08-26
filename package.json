@@ -57,7 +57,7 @@
     "prettier": "^3.0.0",
     "ts-jest": "29.x.x",
     "ts-node": "^10.7.0",
-    "typedoc": "^0.24.8",
+    "typedoc": "^0.25.0",
     "typescript": "^5.0.0"
   },
   "dependencies": {
