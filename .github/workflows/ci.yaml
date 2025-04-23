@@ -65,7 +65,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Install cosign
-        uses: sigstore/cosign-installer@718228a5f85f61170ad5c3ea6c0e9871cc92f1c5
+        uses: sigstore/cosign-installer@3454372f43399081ed03b604cb2d021dabca52bb
         with:
           cosign-release: 'v1.13.6'
       # for multi arch container builds
