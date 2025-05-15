@@ -63,7 +63,7 @@
   "dependencies": {
     "@fastify/under-pressure": "^9.0.0",
     "@kubernetes/client-node": "^0.22.0",
-    "config": "^3.3.8",
+    "config": "^4.0.0",
     "fast-json-patch": "^3.1.1",
     "fastify": "^4.10.2",
     "fastify-plugin": "^5.0.0",
