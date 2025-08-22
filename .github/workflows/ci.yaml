@@ -15,7 +15,7 @@ jobs:
         node-version: [18.x, 20.x, 22.x]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
@@ -36,7 +36,7 @@ jobs:
     needs:
       - build
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - uses: actions/download-artifact@v4
@@ -63,7 +63,7 @@ jobs:
       security-events: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Install cosign
         uses: sigstore/cosign-installer@e9a05e6d32d7ed22b5656cd874ef31af58d05bfa
         with:
@@ -142,7 +142,7 @@ jobs:
       IMAGE_NAME: 'bryopsida/psa-restricted-patcher'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Use Node.js 18
         uses: actions/setup-node@v4
         with:
@@ -193,7 +193,7 @@ jobs:
       contents: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - name: Configure Git
